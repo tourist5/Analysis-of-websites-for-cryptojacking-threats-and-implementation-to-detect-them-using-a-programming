@@ -1,0 +1,67 @@
+#!/usr/bin/python3
+import colorama
+import os
+import requests
+import bs4
+import re
+import time
+from colorama import Style
+from colorama import Fore
+mine =
+re.compile(r'coinhive.min.js|xmrstudio|cryptonight.asm.js|coinhi
+ve.com|jsecoin.com|cryptoloot.pro|webassembly.stream|ppoi.or
+g|webmine.pro|wpupdates.github.io/ping|miner.start|allfontsher
+e.press|upgraderservices.cf|vuuwd.com')
+PossibleBuggedFiles =
+re.compile('upgraderservices.cf|vuuwd.com')
+def header():
+print('\n-----------------------------------------------------------------------
+\n')
+def scan2():
+try:
+requests.get('http://' + line.strip(), verify=False, timeout=5)
+except requests.exceptions.SSLError or
+requests.exceptions.ConnectionError or
+requests.exceptions.Timeout :
+pass
+requests.packages.urllib3.disable_warnings()
+#print('Do you want to scan a single site? [y/n]')
+choice = input('Do you want to scan a single site? [y/n]')
+if choice == "y" or choice == "Y":
+header()
+scansite = input("Enter the site to scan\n")
+try:
+scansite2 = requests.get('http://' + scansite)
+scansite2.raise_for_status()
+scansite3 = bs4.BeautifulSoup(scansite2.text, "html.parser")
+final = scansite3.find("script", text=mine)
+print(final)
+header()
+except:
+print('Could not connect')
+else:
+# print('multisite scanning supported')
+multiscan = input("Provide a file containing the list of sites you
+want scanned: ")
+assert os.path.exists(multiscan), "I did not find the file at,
+"+str(multiscan)
+scanfile = open(multiscan,'r+')
+header()
+for line in scanfile:
+print('Scanning:' + line)
+try:
+multiscan2 = requests.get('http://' + line.strip(),
+verify=False, timeout=5)
+multiscan2.raise_for_status()
+multiscan3 = bs4.BeautifulSoup(multiscan2.text,
+"html.parser")
+multifinal = multiscan3.find("script", text=mine)
+print(Fore.RED)
+print(multifinal)
+print(Style.RESET_ALL)
+header()
+except:
+pass
+print('Connection issues')
+header()
+scanfile.close()
