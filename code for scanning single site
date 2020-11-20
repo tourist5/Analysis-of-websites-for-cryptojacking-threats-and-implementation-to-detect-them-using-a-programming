@@ -1,0 +1,36 @@
+#!/usr/bin/python3
+import colorama
+import os
+import requests
+import bs4
+import re
+import time
+from colorama import Style
+from colorama import Fore
+mine=re.compile(r'coinhive.min.js|xmrstudio|coinhive.com|jseco
+in.com|cryptoloot.pro|webmine.pro')
+def header():
+print('\n---------------------------------------------------------------------
+\n')
+def scan2():
+try:
+requests.get('http://' + line.strip(), verify=False, timeout=5)
+except requests.exceptions.SSLError or requests.exceptions
+.ConnectionError or requests.exceptions.Timeout:
+pass
+requests.packages.urllib3.disable_warnings()
+#scannig a single site...........
+choice = input('Do you want to scan a single site? [y/n]')
+if choice == "y" or choice == "Y":
+header()
+scansite = input("Enter the site to scan\n")
+try:
+scansite2 = requests.get('http://' + scansite)
+scansite2.raise_for_status()
+scansite3 = bs4.BeautifulSoup(scansite2.text,
+"html.parser")
+final = scansite3.find("script", text=mine)
+print(final)
+header()
+except:
+print('Could not connect')
